@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
-
+import "./models/User.js";
+import "./models/MediaItem.js";
+import "./models/Entry.js";
 dotenv.config();
 
 const app = express();
