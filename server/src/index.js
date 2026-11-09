@@ -5,6 +5,8 @@ import { connectDB } from "./config/db.js";
 import "./models/User.js";
 import "./models/MediaItem.js";
 import "./models/Entry.js";
+import authRoutes from "./routes/auth.js";
+import searchRoutes from "./routes/search.js";
 dotenv.config();
 
 const app = express();
@@ -12,8 +14,8 @@ const app = express();
 
 app.use(cors())
 app.use(express.json());
-
-
+app.use("/api/auth",authRoutes)
+app.use("/api/search",searchRoutes)
 
 app.get("/api/health",(req,res)=>{
     res.json ({status :"Ok"});
