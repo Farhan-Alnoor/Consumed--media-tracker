@@ -7,16 +7,17 @@ import "./models/MediaItem.js";
 import "./models/Entry.js";
 import authRoutes from "./routes/auth.js";
 import searchRoutes from "./routes/search.js";
+import entryRoutes from "./routes/entries.js"
 dotenv.config();
 
 const app = express();
 
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
-app.use("/api/auth",authRoutes)
-app.use("/api/search",searchRoutes)
-
+app.use("/api/auth",authRoutes);
+app.use("/api/search",searchRoutes);
+app.use("/api/entries",entryRoutes);
 app.get("/api/health",(req,res)=>{
     res.json ({status :"Ok"});
 

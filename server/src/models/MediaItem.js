@@ -4,7 +4,7 @@ const mediaItemSchema = new mongoose.Schema(
     {
 
         type: {type : String,enum : ["movie","tv","game","anime"],required : true},
-        source : {type : String,enum : ["tmdb,igdb,anilist"],required : true},
+        source : {type : String,enum : ["tmdb", "igdb", "anilist"],required : true},
         externalId: {type : String, required : true},
         title: {type: String,required :true},
         posterUrl : String,

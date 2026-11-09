@@ -6,7 +6,7 @@ const entrySchema = new mongoose.Schema(
     item: { type: mongoose.Schema.Types.ObjectId, ref: "MediaItem", required: true },
     status: {
         type: String,
-        enum: ["planned","in_progress","comleted,","dropped"],
+        enum: ["planned","in_progress","completed","dropped"],
         default : "planned"
     },
     rating: {type : Number ,min:0,max :10},
