@@ -15,6 +15,10 @@ export async function api(path, {method = "GET",body}={}) {
 
     if (res.status === 204)return null;
     const data = await res.json().catch(()=>({}));
-    if (!res.ok) throw new Error(data.message || "Request failed");
+    if (!res.ok){
+        const error = new Error(data.message || "Request failed");
+        error.status = res.status;
+        throw error;
+    } 
     return data
 }

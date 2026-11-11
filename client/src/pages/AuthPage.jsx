@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
+import { useLocation } from "react-router-dom";
 export default function Authpage({ mode }) {
   const isRegister = mode === "register";
   const { login, register } = useAuth();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -19,7 +19,7 @@ export default function Authpage({ mode }) {
     try {
       if (isRegister) await register(form.username, form.email, form.password);
       else await login(form.email, form.password);
-      navigate("/");
+      navigate(location.state?.from || "/", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
