@@ -117,3 +117,22 @@ export async function getDetails(id) {
     }),
   };
 }
+
+
+const TRENDING_QUERY = `
+query {
+  Page(perPage: 20) {
+    media(type: ANIME, isAdult: false, sort: TRENDING_DESC) {
+      id
+      title { romaji english }
+      coverImage { large }
+      description(asHtml: false)
+      startDate { year month day }
+    }
+  }
+}`;
+
+export async function trendingAnime() {
+  const data = await anilistFetch(TRENDING_QUERY, {});
+  return data.Page.media.map(normalize);
+}

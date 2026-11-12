@@ -128,3 +128,20 @@ export async function getDetails(id) {
     cast: [],
   };
 }
+
+
+
+export async function popularGames() {
+  const now = Math.floor(Date.now() / 1000);
+  const threeYearsAgo = now - 3 * 365 * 24 * 60 * 60;
+
+  const games = await igdbFetch(
+    "games",
+    `fields name, cover.image_id, summary, first_release_date;
+     where total_rating_count > 30 & version_parent = null & cover != null
+       & first_release_date > ${threeYearsAgo} & first_release_date < ${now};
+     sort total_rating_count desc;
+     limit 20;`
+  );
+  return games.map(normalize);
+}

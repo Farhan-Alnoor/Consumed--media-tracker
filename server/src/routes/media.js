@@ -15,7 +15,7 @@ const PROVIDERS = {
 router.get("/:type/:id", async (req, res) => {
   const { type, id } = req.params;
 
-  const getDetails = PROVIDERS[type];
+  const getDetails = Object.hasOwn(PROVIDERS, type) ? PROVIDERS[type] : null;
   if (!getDetails) {
     return res.status(400).json({ message: "Unsupported media type" });
   }

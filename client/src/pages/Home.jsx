@@ -1,31 +1,29 @@
 import { useState } from "react";
-
 import { useAuth } from "../context/AuthContext";
 import useMediaTheme from "../hooks/useMediaTheme";
+import MediaRow from "../components/MediaRow";
 
-const TYPES = ["movie", "tv", "game", "anime"];
+const ROWS = [
+  { type: "movie", title: "Trending movies" },
+  { type: "tv", title: "Trending TV" },
+  { type: "anime", title: "Trending anime" },
+  { type: "game", title: "Popular games" },
+];
 
 export default function Home() {
   const { user } = useAuth();
+  const [activeType, setActiveType] = useState(null);
 
-  const [type, setType] = useState(null);
-
-  useMediaTheme(type);
+  useMediaTheme(activeType);
 
   return (
     <div className="page">
-      <h1>{user ? `Welcome, ${user.username}` : "Consumed"}</h1>
+      <h1>{user ? `Welcome, ${user.username}` : "Track everything you watch and play"}</h1>
+      <p className="muted">Discover what's popular right now, and keep track of your own list.</p>
 
-
-      <div className="card">
-        <p>Theme check:</p>
-        <div className="row">
-          {TYPES.map((t) => (
-            <button key={t} onClick={() => setType(t)}>{t}</button>
-          ))}
-        </div>
-        
-      </div>
+      {ROWS.map((row) => (
+        <MediaRow key={row.type} type={row.type} title={row.title} onActivate={setActiveType} />
+      ))}
     </div>
   );
 }

@@ -72,3 +72,16 @@ export async function getDetails(type, id) {
   const data = await tmdbFetch(`/${type}/${id}`, { append_to_response: "credits" });
   return normalizeDetails(data, type);
 }
+
+
+
+
+export async function trendingMovies() {
+  const data = await tmdbFetch("/trending/movie/week");
+  return data.results.map((r) => normalize(r, "movie"));
+}
+
+export async function trendingTV() {
+  const data = await tmdbFetch("/trending/tv/week");
+  return data.results.map((r) => normalize(r, "tv"));
+}

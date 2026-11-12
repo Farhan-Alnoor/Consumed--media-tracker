@@ -19,7 +19,8 @@ router.get("/", async (req, res) => {
     return res.status(400).json({ message: "Query parameter 'q' is required" });
   }
 
-  const search = PROVIDERS[type];
+  const search = Object.hasOwn(PROVIDERS, type) ? PROVIDERS[type] : null;
+
   if (!search) {
     return res.status(400).json({ message: "Unsupported type" });
   }

@@ -9,13 +9,19 @@ import authRoutes from "./routes/auth.js";
 import searchRoutes from "./routes/search.js";
 import entryRoutes from "./routes/entries.js"
 import mediaRoutes from "./routes/media.js";
+import browseRoutes from "./routes/browse.js";
 
 dotenv.config();
 
 const app = express();
 
 
-app.use(cors());
+const allowedOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins.length ? allowedOrigins : true }));
 app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/search",searchRoutes);
@@ -26,7 +32,7 @@ app.get("/api/health",(req,res)=>{
 
 
 });
-
+app.use("/api/browse", browseRoutes);
 
 const PORT = process.env.PORT || 5000;
 
