@@ -1,3 +1,10 @@
+
+@property --glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e5e5e5;
+}
+
 :root {
   --bg: #000;
   --surface: #0d0d0d;
@@ -6,6 +13,8 @@
   --muted: #a3a3a3;
   --accent: #e5e5e5;
   --accent-contrast: #000;
+  --glow: var(--accent);
+  transition: --glow 0.8s ease;
 }
 
 [data-media="movie"] { --accent: #3b82f6; --accent-contrast: #fff; }
@@ -24,7 +33,7 @@ body {
 
 a { color: var(--accent); }
 
-.page { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
+.page { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; padding-top :5rem; }
 
 .card {
   background: var(--surface);
@@ -33,7 +42,7 @@ a { color: var(--accent); }
   padding: 1.5rem;
 }
 
-.auth-card { max-width: 380px; margin: 4rem auto; }
+.auth-card { max-width: 380px; margin: 6rem auto 4rem; }
 
 .field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
 
@@ -112,12 +121,19 @@ button.ghost {
 
 
 .navbar {
+  position : fixed;
+  top: 0;
+  left : 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85),rgba(0, 0, 0, 0));
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
-  opacity: 0;
+ 
+  
+  
 }
 .navbar a { color: var(--text); text-decoration: none; }
 .navbar a.active { color: var(--accent); }
@@ -164,11 +180,17 @@ button.ghost {
 .entry > a { display: block; flex-shrink: 0; }
 
 .hero {
-  height: 220px;
+  height: 400px;
   background-color: var(--surface);
   background-size: cover;
   background-position: center;
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent);
 }
+
+.hero + .page{padding-top: 2rem;}
+
+
 
 .detail { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; }
 .detail-poster {
@@ -194,3 +216,32 @@ button.ghost {
 
 .cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.75rem; }
 .cast .card { padding: 0.75rem; }
+
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    #000 15%,
+    color-mix(in srgb, var(--glow) 45%, #000) 85%
+  );
+  animation: gradient-drift 24s ease-in-out infinite alternate;
+}
+
+
+
+@keyframes gradient-drift {
+  from { transform: translate(-6%, -4%) rotate(0deg); }
+  to   { transform: translate(6%, 4%) rotate(12deg); }
+}
+
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}

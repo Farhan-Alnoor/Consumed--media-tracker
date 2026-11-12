@@ -1,17 +1,10 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
-export default function useMediatheme(type){
-
-    useEffect(()=>{
-
-        if (type) document.documentElement.dataset.media = type;
-        return ()=>{
-            delete document.documentElement.dataset.media;
-        };
-
-
-
-    },[type]);
+export default function useMediaTheme(type) {
+  useLayoutEffect(() => {
+    if (type) document.documentElement.dataset.media = type;
+    return () => {
+      delete document.documentElement.dataset.media;
+    };
+  }, [type]);
 }
-
-

@@ -6,7 +6,7 @@ import useMediaTheme from "../hooks/useMediaTheme";
 import MediaCard from "../components/MediaCard";
 
 const TYPES = ["movie", "tv", "game", "anime"];
-const SUPPORTED = ["movie", "tv"]; // backend providers that exist so far
+const SUPPORTED = ["movie", "tv","anime","game"]; // backend providers that exist so far
 
 
 
@@ -97,7 +97,7 @@ async function addToList(item){
                 <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
-                placeholder={`Search${type}...`}
+                placeholder={`Search ${type}...`}
                 />
                 <button type= "submit" disabled = {loading || !SUPPORTED.includes(type)}>
                     Search

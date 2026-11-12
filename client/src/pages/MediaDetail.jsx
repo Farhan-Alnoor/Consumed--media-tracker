@@ -11,7 +11,7 @@ const SAVE_LABELS = {
   exists: "In your list",
   error: "Failed, retry",
 };
-
+const CREDIT_LABELS = { movie: "Directed by", tv: "Created by", anime: "Studio" ,game: "Developer"};
 function formatRuntime(min) {
   if (!min) return null;
   return min >= 60 ? `${Math.floor(min / 60)}h ${min % 60}m` : `${min}m`;
@@ -100,7 +100,7 @@ export default function MediaDetail() {
         className="hero"
         style={
           item.backdropUrl
-            ? { backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), #000), url(${item.backdropUrl})` }
+            ?{ backgroundImage: `url(${item.backdropUrl})` }
             : undefined
         }
       />
@@ -127,14 +127,18 @@ export default function MediaDetail() {
               </div>
             )}
 
+            {item.platforms?.length > 0 && (
+            <p className="muted">Platforms: {item.platforms.join(", ")}</p>
+            )}
+
             <h2>Overview</h2>
             <p>{item.overview || "No overview available."}</p>
 
             {item.creators.length > 0 && (
-              <p className="muted">
-                {type === "movie" ? "Directed by" : "Created by"} {item.creators.join(", ")}
-              </p>
-            )}
+  <p className="muted">
+    {CREDIT_LABELS[type] ?? "By"}: {item.creators.join(", ")}
+  </p>
+)}
 
             <button
               className={done ? "ghost" : ""}

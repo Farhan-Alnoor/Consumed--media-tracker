@@ -1,13 +1,22 @@
 import { Router } from "express";
-import { getDetails } from "../services/tmdb.js";
+import * as tmdb from "../services/tmdb.js";
+import * as anilist from "../services/anilist.js";
+import * as igdb from "../services/igdb.js";
 
 const router = Router();
-const SUPPORTED = ["movie", "tv"];
+
+const PROVIDERS = {
+  movie: (id) => tmdb.getDetails("movie", id),
+  tv: (id) => tmdb.getDetails("tv", id),
+  anime: (id) => anilist.getDetails(id),
+  game: (id) => igdb.getDetails(id),
+};
 
 router.get("/:type/:id", async (req, res) => {
   const { type, id } = req.params;
 
-  if (!SUPPORTED.includes(type)) {
+  const getDetails = PROVIDERS[type];
+  if (!getDetails) {
     return res.status(400).json({ message: "Unsupported media type" });
   }
   if (!/^\d+$/.test(id)) {
@@ -15,7 +24,7 @@ router.get("/:type/:id", async (req, res) => {
   }
 
   try {
-    const item = await getDetails(type, id);
+    const item = await getDetails(id);
     res.json({ item });
   } catch (err) {
     if (err.status === 404) {
