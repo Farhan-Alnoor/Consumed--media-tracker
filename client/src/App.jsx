@@ -3,7 +3,7 @@ import AuthPage from "./pages/AuthPage";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/NavBar";
 import List from "./pages/List";
 import MediaDetail from "./pages/MediaDetail";
 export default function App() {
