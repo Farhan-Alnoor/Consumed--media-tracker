@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import useMediaTheme from "../hooks/useMediaTheme";
+import AddToListModal from "../components/AddToListModal";
 
 const SAVE_LABELS = {
   idle: "Add to list",
@@ -26,7 +27,7 @@ export default function MediaDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saveState, setSaveState] = useState("idle");
-
+  const [showModal, setShowModal] = useState(false);
   useMediaTheme(type);
 
   // Load the details
@@ -61,23 +62,13 @@ export default function MediaDetail() {
 
     return () => { cancelled = true; };
   }, [user, item]);
-
-  async function addToList() {
-    if (!user) {
-      navigate("/login", { state: { from: `/media/${type}/${id}` } });
-      return;
-    }
-    setSaveState("adding");
-    try {
-      await api("/api/entries", {
-        method: "POST",
-        body: { item: { ...item, totalUnits: item.episodes }, status: "planned" },
-      });
-      setSaveState("added");
-    } catch (err) {
-      setSaveState(err.status === 409 ? "exists" : "error");
-    }
+function addToList() {
+  if (!user) {
+    navigate("/login", { state: { from: `/media/${type}/${id}` } });
+    return;
   }
+  setShowModal(true);
+}
 
   if (loading) return <div className="page"><p className="muted">Loading...</p></div>;
   if (error) return <div className="page"><p className="error">{error}</p></div>;
@@ -164,6 +155,16 @@ export default function MediaDetail() {
           </>
         )}
       </div>
+      {showModal && (
+  <AddToListModal
+    item={{ ...item, totalUnits: item.episodes }}
+    onClose={() => setShowModal(false)}
+    onDone={(state) => {
+      setSaveState(state);
+      setShowModal(false);
+    }}
+  />
+)}
     </div>
   );
 }

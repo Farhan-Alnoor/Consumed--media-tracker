@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import useMediaTheme from "../hooks/useMediaTheme";
 import MediaCard from "../components/MediaCard";
+import AddToListModal from "../components/AddToListModal";
 
 const TYPES = ["movie", "tv", "game", "anime"];
 const SUPPORTED = ["movie", "tv","anime","game"]; // backend providers that exist so far
@@ -21,7 +22,7 @@ export default function Search() {
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
   const [saved, setSaved] = useState({});
-
+  const [modalItem, setModalItem] = useState(null);
   const requestId = useRef(0);
 
   useMediaTheme(type)
@@ -61,26 +62,13 @@ export default function Search() {
     if (query.trim() && SUPPORTED.includes(t)) runSearch(query, t);
   }
 
-
-async function addToList(item){
-    if (!user){
-        navigate("/login",{state :{from:"/search"}});
-        return;
-    }
-
-    const key = `${item.source}:${item.externalId}`;
-    setSaved((s)=>({...s,[key]:"adding"}));
-    try{
-        await api("/api/entries",{method:"POST",body:{item,status:"planned"}});
-        setSaved((s) => ({ ...s, [key]: "added" }));
-
-    }
-    catch (err){
-        setSaved((s)=>({...s,[key]: err.status === 409?"exists": "error"}));
-
-    }
+function addToList(item) {
+  if (!user) {
+    navigate("/login", { state: { from: "/search" } });
+    return;
+  }
+  setModalItem(item);
 }
-
 
 
     return(
@@ -118,6 +106,16 @@ async function addToList(item){
           );
         })}
       </div>
+      {modalItem && (
+  <AddToListModal
+    item={modalItem}
+    onClose={() => setModalItem(null)}
+    onDone={(state) => {
+      setSaved((s) => ({ ...s, [`${modalItem.source}:${modalItem.externalId}`]: state }));
+      setModalItem(null);
+    }}
+  />
+)}
     </div>
     )
 

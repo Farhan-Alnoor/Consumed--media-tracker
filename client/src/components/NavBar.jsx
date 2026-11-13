@@ -9,7 +9,7 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="brand">Consumed</Link>
       <NavLink to="/search">Search</NavLink>
-      {user && <NavLink to="/list">My List</NavLink>}
+      {user && <NavLink to="/profile">Profile</NavLink>}
       <div className="spacer" />
       {user ? (
         <button className="ghost" onClick={() => { logout(); navigate("/"); }}>Log out</button>
