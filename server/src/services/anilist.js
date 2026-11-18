@@ -1,8 +1,8 @@
 const API_URL  = "https://graphql.anilist.co";
-
 const SEARCH_QUERY = `
-query ($search: String) {
-  Page(perPage: 20) {
+query ($search: String, $page: Int) {
+  Page(page: $page, perPage: 20) {
+    pageInfo { hasNextPage }
     media(search: $search, type: ANIME, isAdult: false, sort: SEARCH_MATCH) {
       id
       title { romaji english }
@@ -88,9 +88,12 @@ function normalize(media) {
   };
 }
 
-export async function searchAnime(query) {
-  const data = await anilistFetch(SEARCH_QUERY, { search: query });
-  return data.Page.media.map(normalize);
+export async function searchAnime(query, page = 1) {
+  const data = await anilistFetch(SEARCH_QUERY, { search: query, page });
+  return {
+    results: data.Page.media.map(normalize),
+    hasMore: data.Page.pageInfo.hasNextPage,
+  };
 }
 
 export async function getDetails(id) {

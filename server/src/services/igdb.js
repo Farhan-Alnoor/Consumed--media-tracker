@@ -2,6 +2,7 @@ const TOKEN_URL = "https://id.twitch.tv/oauth2/token";
 const API_URL = "https://api.igdb.com/v4";
 
 let cachedToken = null; // { value, expiresAt }
+const PAGE_SIZE = 20;
 
 // IGDB uses Twitch's client-credentials OAuth. Tokens last weeks, so we cache one in memory.
 async function getToken() {
@@ -84,15 +85,20 @@ function normalize(game) {
   };
 }
 
-export async function searchGames(query) {
+
+export async function searchGames(query, page = 1) {
   const games = await igdbFetch(
     "games",
     `search "${escapeQuery(query)}";
      fields name, cover.image_id, summary, first_release_date;
      where version_parent = null;
-     limit 20;`
+     limit ${PAGE_SIZE + 1};
+     offset ${(page - 1) * PAGE_SIZE};`
   );
-  return games.map(normalize);
+  return {
+    results: games.slice(0, PAGE_SIZE).map(normalize),
+    hasMore: games.length > PAGE_SIZE,
+  };
 }
 
 export async function getDetails(id) {

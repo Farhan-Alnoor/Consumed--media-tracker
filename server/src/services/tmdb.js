@@ -32,17 +32,21 @@ function normalize(result,type){
     };
 }
 
-export async function searchMovies(query) {
-    const data = await tmdbFetch("/search/movie",{query})
-    return data.results.map((r)=> normalize(r,"movie"))
+export async function searchMovies(query, page = 1) {
+  const data = await tmdbFetch("/search/movie", { query, page });
+  return {
+    results: data.results.map((r) => normalize(r, "movie")),
+    hasMore: data.page < data.total_pages,
+  };
 }
 
-
-export async function searchTV(query){
-    const data = await tmdbFetch("/search/tv",{query})
-    return data.results.map((r)=> normalize(r,"tv"))
+export async function searchTV(query, page = 1) {
+  const data = await tmdbFetch("/search/tv", { query, page });
+  return {
+    results: data.results.map((r) => normalize(r, "tv")),
+    hasMore: data.page < data.total_pages,
+  };
 }
-
 
 function normalizeDetails(data, type) {
   const isMovie = type === "movie";

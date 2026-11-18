@@ -14,7 +14,25 @@ const PROGRESS = {
   anime: { label: "Episodes watched", step: 1 },
   game: { label: "Hours played", step: 0.5 },
 };
+function localToday() {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
 
+function datesFor(nextStatus, { startedAt, finishedAt }) {
+  const today = localToday();
+  let started = startedAt;
+
+  if (nextStatus === "planned") started = "";
+  if (nextStatus === "in_progress" && !started) started = today;
+
+  return {
+    startedAt: started,
+    finishedAt: nextStatus === "completed" ? finishedAt || today : "",
+  };
+}
 // Add mode: pass `item` + `onDone`. Edit mode: pass `entry` + `onUpdated` + `onDeleted`.
 export default function AddToListModal({ item: itemProp, entry, onClose, onDone, onUpdated, onDeleted }) {
   const isEdit = Boolean(entry);
@@ -27,7 +45,19 @@ export default function AddToListModal({ item: itemProp, entry, onClose, onDone,
   const [notes, setNotes] = useState(entry?.notes ?? "");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [startedAt, setStartedAt] = useState(entry?.startedAt ? entry.startedAt.slice(0, 10) : "");
+const [finishedAt, setFinishedAt] = useState(entry?.finishedAt ? entry.finishedAt.slice(0, 10) : "");
 
+const today = localToday();
+const showStarted = status !== "planned";
+const showFinished = status === "completed";
+
+function handleStatusChange(next) {
+  const dates = datesFor(next, { startedAt, finishedAt });
+  setStatus(next);
+  setStartedAt(dates.startedAt);
+  setFinishedAt(dates.finishedAt);
+}
   const progressConfig = PROGRESS[item.type];
 
   useEffect(() => {
@@ -49,6 +79,8 @@ export default function AddToListModal({ item: itemProp, entry, onClose, onDone,
           status,
           rating: rating === "" ? null : Number(rating),
           notes: notes.trim(),
+          startedAt: showStarted && startedAt ? startedAt : null,
+  finishedAt: showFinished && finishedAt ? finishedAt : null,
         };
         if (progressConfig) changes.progress = progress === "" ? 0 : Number(progress);
 
@@ -59,7 +91,8 @@ export default function AddToListModal({ item: itemProp, entry, onClose, onDone,
         if (notes.trim()) body.notes = notes.trim();
         if (rating !== "") body.rating = Number(rating);
         if (progressConfig && progress !== "") body.progress = Number(progress);
-
+        if (showStarted && startedAt) body.startedAt = startedAt;
+if (showFinished && finishedAt) body.finishedAt = finishedAt;
         await api("/api/entries", { method: "POST", body });
         onDone("added");
       }
@@ -103,7 +136,7 @@ export default function AddToListModal({ item: itemProp, entry, onClose, onDone,
 
         <label>
           Status
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select value={status} onChange={(e) => handleStatusChange(e.target.value)}>
             {STATUSES.map((s) => (
               <option key={s.value} value={s.value}>{s.label}</option>
             ))}
@@ -128,6 +161,34 @@ export default function AddToListModal({ item: itemProp, entry, onClose, onDone,
             />
           </div>
         )}
+
+        {(showStarted || showFinished) && (
+  <div className="date-row">
+    {showStarted && (
+      <label>
+        Started
+        <input
+          type="date"
+          value={startedAt}
+          max={today}
+          onChange={(e) => setStartedAt(e.target.value)}
+        />
+      </label>
+    )}
+    {showFinished && (
+      <label>
+        Finished
+        <input
+          type="date"
+          value={finishedAt}
+          min={startedAt || undefined}
+          max={today}
+          onChange={(e) => setFinishedAt(e.target.value)}
+        />
+      </label>
+    )}
+  </div>
+)}
 
         <label>
           Notes (optional)
