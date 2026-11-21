@@ -12,11 +12,21 @@ const TABS = [
 
 export default function Profile() {
   const { tab = "diet" } = useParams();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const [privacyError, setPrivacyError] = useState("");
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  async function togglePublic() {
+  setPrivacyError("");
+  try {
+    const data = await api("/api/users/me", { method: "PATCH", body: { isPublic: !user.isPublic } });
+    setUser(data.user);
+  } catch (err) {
+    setPrivacyError(err.message);
+  }
+}
   useEffect(() => {
     let cancelled = false;
     api("/api/entries")
@@ -37,6 +47,19 @@ export default function Profile() {
           <span className="muted">{user.email}</span>
         </div>
       </div>
+      <div className="privacy">
+  <label>
+    <input type="checkbox" checked={user.isPublic} onChange={togglePublic} />
+    Public profile
+  </label>
+  <span>
+    {user.isPublic
+      ? "Anyone can see your list, ratings, and stats. Your private notes are never shown."
+      : "Only you can see your list."}
+  </span>
+  <Link to={`/u/${user.username}`}>View as others see it</Link>
+</div>
+{privacyError && <p className="error">{privacyError}</p>}
 
       <nav className="tabs">
         {TABS.map((t) => (

@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 import { TYPES, TYPE_LABELS } from "../utils/media";
 import { computeStats } from "../utils/stats";
 
-export default function DietTab({ entries }) {
+export default function DietTab({ entries , readOnly = false}) {
   const stats = useMemo(() => computeStats(entries), [entries]);
   const { total, byType } = stats;
-
-  if (total === 0) {
-    return (
-      <p className="muted">
-        Nothing to analyze yet. <Link to="/search">Add a few titles</Link> and your stats will show up here.
-      </p>
-    );
-  }
+if (total === 0) {
+  return readOnly ? (
+    <p className="muted">Nothing to show yet.</p>
+  ) : (
+    <p className="muted">
+      Nothing to analyze yet. <Link to="/search">Add a few titles</Link> and your stats will show up here.
+    </p>
+  );
+}
 
   const present = TYPES.filter((t) => byType[t].count > 0);
   const top = stats.mostTracked;
@@ -45,7 +46,7 @@ export default function DietTab({ entries }) {
       <h2 className="diet-headline">
         {share >= 40 ? (
           <>
-            Your diet is mostly <span data-media={top}>{TYPE_LABELS[top]}</span> ({share}% of your list)
+           { readOnly ? "Thier" : "Your" } diet is mostly <span data-media={top}>{TYPE_LABELS[top]}</span> ({share}% of {readOnly ? "their" : "your"} list)
           </>
         ) : (
           "A balanced diet: no single type dominates your list"

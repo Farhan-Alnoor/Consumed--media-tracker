@@ -10,6 +10,7 @@ import searchRoutes from "./routes/search.js";
 import entryRoutes from "./routes/entries.js"
 import mediaRoutes from "./routes/media.js";
 import browseRoutes from "./routes/browse.js";
+import userRoutes from "./routes/users.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/search",searchRoutes);
 app.use("/api/entries",entryRoutes);
 app.use("/api/media", mediaRoutes);
+app.use("/api/users", userRoutes);
 app.get("/api/health",(req,res)=>{
     res.json ({status :"Ok"});
 

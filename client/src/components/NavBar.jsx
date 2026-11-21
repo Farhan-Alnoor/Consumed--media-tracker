@@ -9,6 +9,7 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="brand">Consumed</Link>
       <NavLink to="/search">Search</NavLink>
+      <NavLink to="/people">People</NavLink>
       {user && <NavLink to="/profile">Profile</NavLink>}
       <div className="spacer" />
       {user ? (

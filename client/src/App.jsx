@@ -5,13 +5,17 @@ import Search from "./pages/Search";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/NavBar";
 import Profile from "./pages/Profile";
-
+import PublicProfile from "./pages/PublicProfile";
+import People from "./pages/People";
 import MediaDetail from "./pages/MediaDetail";
 export default function App() {
   return (
     <>
     <Navbar/>
+    
     <Routes>
+      <Route path="/u/:username/:tab?" element={<PublicProfile />} />
+      <Route path="/people" element={<People />} />
       <Route path="/login" element={<AuthPage mode="login" />} />
       <Route path="/register" element={<AuthPage mode="register" />} />
       <Route path="/" element={<Home />} />

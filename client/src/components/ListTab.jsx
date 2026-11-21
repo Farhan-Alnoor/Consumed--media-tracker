@@ -59,7 +59,7 @@ function SortHeader({ label, sortKey, sort, onSort }) {
 
 
 
-export default function ListTab({ entries, setEntries }) {
+export default function ListTab({ entries, setEntries ,readOnly = false}) {
   const [type, setType] = useState("all");
   const [status, setStatus] = useState("all");
   const [editing, setEditing] = useState(null);
@@ -100,14 +100,16 @@ function toggleSort(key) {
     setEditing(null);
   }
 
-  if (entries.length === 0) {
-    return (
-      <p className="muted">
-        Your list is empty. <Link to="/search">Find something to add.</Link>
-      </p>
-    );
-  }
-
+ if (entries.length === 0) {
+  return readOnly ? (
+    <p className="muted">Nothing here yet.</p>
+  ) : (
+    <p className="muted">
+      Your list is empty. <Link to="/search">Find something to add.</Link>
+    </p>
+  );
+}
+  
   return (
     <div>
       <div className="row">
@@ -149,23 +151,28 @@ function toggleSort(key) {
             <tbody>
               {visible.map((entry) => {
                 const { item } = entry;
+                const poster = item.posterUrl ? (
+  <img src={item.posterUrl} alt="" loading="lazy" />
+) : (
+  <span className="poster-placeholder">?</span>
+);
                 return (
                   <tr key={entry._id}>
                     <td>
                       <div className="title-cell">
-                        <button
-                          type="button"
-                          className="poster-btn"
-                          title="Edit entry"
-                          aria-label={`Edit ${item.title}`}
-                          onClick={() => setEditing(entry)}
-                        >
-                          {item.posterUrl ? (
-                            <img src={item.posterUrl} alt="" loading="lazy" />
-                          ) : (
-                            <span className="poster-placeholder">?</span>
-                          )}
-                        </button>
+                        {readOnly ? (
+  <span className="poster-btn static">{poster}</span>
+) : (
+  <button
+    type="button"
+    className="poster-btn"
+    title="Edit entry"
+    aria-label={`Edit ${item.title}`}
+    onClick={() => setEditing(entry)}
+  >
+    {poster}
+  </button>
+)}
                         <Link to={`/media/${item.type}/${item.externalId}`}>{item.title}</Link>
                       </div>
                     </td>
@@ -184,7 +191,7 @@ function toggleSort(key) {
         </div>
       )}
 
-      {editing && (
+      {editing && !readOnly && (
         <AddToListModal
           entry={editing}
           onClose={() => setEditing(null)}

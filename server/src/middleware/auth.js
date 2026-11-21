@@ -27,3 +27,17 @@ export async function protect(req,res,next){
     }
 
 }
+
+export async function optionalAuth(req, res, next) {
+  const header = req.headers.authorization || "";
+  const token = header.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!token) return next();
+
+  try {
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(id);
+  } catch {
+    // an invalid or expired token just means "treat as logged out"
+  }
+  next();
+}

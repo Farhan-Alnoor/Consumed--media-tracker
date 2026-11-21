@@ -491,3 +491,30 @@ input[type="date"] { color-scheme: dark; }
 .load-more { display: flex; justify-content: center; margin-top: 1.5rem; }
 .sentinel { height: 1px; }
 .load-more { flex-direction: column; align-items: center; gap: 0.5rem; }
+
+.poster-btn.static { pointer-events: none; }
+
+.notice {
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.privacy {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem;
+  margin-bottom: 1.5rem; color: var(--muted); font-size: 0.9rem;
+}
+.privacy label { display: flex; align-items: center; gap: 0.5rem; color: var(--text); }
+input[type="checkbox"] { width: auto; padding: 0; accent-color: var(--accent); }
+
+.avatar.small { width: 40px; height: 40px; font-size: 1.1rem; }
+.user-list { list-style: none; padding: 0; display: grid; gap: 0.75rem; margin-top: 1rem; }
+.user-row {
+  display: flex; align-items: center; gap: 0.85rem; padding: 0.75rem 1rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  color: var(--text); text-decoration: none;
+}
+.user-row:hover { border-color: var(--accent); }

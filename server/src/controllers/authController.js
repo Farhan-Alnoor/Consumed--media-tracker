@@ -9,10 +9,12 @@ const signToken = (id) =>
     });
 
 
-const publicUser = (user) => ({
+export const publicUser = (user) => ({
     id: user._id,
     username: user.username,
     email : user.email,
+    isPublic : user.isPublic !== false,
+    createdAt : user.createdAt,
 });
 
 
